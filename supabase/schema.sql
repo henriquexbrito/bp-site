@@ -3,7 +3,7 @@
 create extension if not exists pgcrypto;
 create type public.app_role as enum ('patient','doctor','receptionist','admin');
 create type public.appointment_status as enum ('pending','confirmed','completed','cancelled','no_show');
-create type public.appointment_type as enum ('presencial','retorno');
+create type public.appointment_type as enum ('presencial','retorno','pre_natal');
 
 create table public.profiles (
  id uuid primary key references auth.users(id) on delete cascade,
@@ -30,6 +30,14 @@ create table public.doctors (
  active boolean not null default true,
  created_at timestamptz not null default now()
 );
+
+-- Identificadores estáveis usados pelo formulário de agendamento.
+insert into public.doctors (id, full_name, crm, active)
+values
+ ('00000000-0000-4000-8000-000000000001', 'Dra. Danielle Lourenço Alves Brito', 'CRM/RJ 748188', true),
+ ('00000000-0000-4000-8000-000000000002', 'Dr. Marcelo Dutra Alves Brito', 'CRM/RJ 748170', true)
+on conflict (crm) do update
+set full_name = excluded.full_name, active = true;
 create table public.availability_slots (
  id uuid primary key default gen_random_uuid(),
  doctor_id uuid not null references public.doctors(id),
