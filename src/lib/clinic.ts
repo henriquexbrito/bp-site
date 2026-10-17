@@ -7,8 +7,8 @@ export const clinic = {
   whatsappHours: "Segunda a sexta, das 8h às 17h",
   description: "Britos Pediatria oferece atendimento especializado em Pediatria, Puericultura e Neonatologia, com cuidado humanizado e acolhedor para recém-nascidos, crianças e adolescentes. Atuamos também com aleitamento materno, acompanhamento do crescimento e desenvolvimento e cuidados gerais, sempre com atenção, segurança e excelência médica.",
   doctors: [
-    { name: "Dra. Danielle Lourenço Alves Brito", crm: "CRM/RJ 748188", color: "pink" },
-    { name: "Dr. Marcelo Dutra Alves Brito", crm: "CRM/RJ 748170", color: "green" },
+    { id: "00000000-0000-4000-8000-000000000001", name: "Dra. Danielle Lourenço Alves Brito", crm: "CRM/RJ 748188", color: "pink" },
+    { id: "00000000-0000-4000-8000-000000000002", name: "Dr. Marcelo Dutra Alves Brito", crm: "CRM/RJ 748170", color: "green" },
   ],
 } as const;
 
