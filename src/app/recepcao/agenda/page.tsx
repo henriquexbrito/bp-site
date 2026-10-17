@@ -34,7 +34,9 @@ function formatDate(date: string) {
 }
 
 function phoneForWhatsApp(phone: string) {
-  return phone.replace(/\D/g, "").replace(/^0+/, "");
+  const digits = phone.replace(/\D/g, "").replace(/^0+/, "");
+  if (!digits) return "";
+  return digits.startsWith("55") ? digits : `55${digits}`;
 }
 
 export default function ReceptionAgendaPage() {
