@@ -94,8 +94,29 @@ export default function ReceptionAgendaPage() {
     if (!form.doctor_id) { setError("Selecione o profissional."); return; }
     const supabase = createClient(); if (!supabase) { setError("Supabase não configurado."); return; }
     setSaving(true);
+    // Localiza o cadastro existente para vincular a consulta ao histórico administrativo.
+    const { data: existingPatient, error: patientLookupError } = await supabase.from("patients")
+      .select("id").eq("full_name", form.patient_name.trim()).eq("guardian_name", form.guardian_name.trim()).maybeSingle();
+    if (patientLookupError) {
+      setSaving(false);
+      setError("Não foi possível consultar os cadastros de pacientes. Verifique a migração e as permissões.");
+      return;
+    }
+    let patientId = existingPatient?.id ?? null;
+    if (!patientId) {
+      const { data: createdPatient, error: createPatientError } = await supabase.from("patients").insert({
+        full_name: form.patient_name.trim(), guardian_user_id: null, guardian_name: form.guardian_name.trim(),
+        contact_email: form.contact_email.trim(), contact_phone: form.contact_phone.trim(),
+      }).select("id").single();
+      if (createPatientError || !createdPatient) {
+        setSaving(false);
+        setError("Não foi possível criar o cadastro do paciente. Confira as migrações e as permissões do Supabase.");
+        return;
+      }
+      patientId = createdPatient.id;
+    }
     const { error: insertError } = await supabase.from("appointments").insert({
-      ...form, created_by: userId, status: "pending",
+      patient_id: patientId, ...form, created_by: userId, status: "pending",
     });
     setSaving(false);
     if (insertError) {
